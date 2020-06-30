@@ -79,3 +79,13 @@ class OctoStore extends OctoDB {
     }
 }
 ```
+
+# Transctions?
+You are not required to use transactions. However, this can be very useful, and even necessary. OctoStore provides an adequate and obvious transaction interface.
+```js
+// Case 1: Error, and discard all changes
+await users.transaction(async(db) => {db[3] = {name: 'Jack'}; throw Error('ERROR!')}) // The scary "Uncaught Error: ERROR!" should appear in the console, but nothing bad happened to your DB
+
+// Case 2: No errors, normal flight
+await users.transaction(async(db) => {db[3] = {name: 'Jack'}}) // Jack has now arrived at your database
+```
