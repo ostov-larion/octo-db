@@ -80,7 +80,7 @@ class OctoStore extends OctoDB {
 }
 ```
 
-# Transctions?
+# Transactions?
 You are not required to use transactions. However, this can be very useful, and even necessary. OctoStore provides an adequate and obvious transaction interface.
 ```js
 // Case 1: Error, and discard all changes
