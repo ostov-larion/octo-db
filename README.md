@@ -11,6 +11,7 @@ Connect this library to your project:
 # Set!
 Create DB and fill it:
 ```js
+// main.js
 (async() => {
 UserScheme = {
     keyPath: "id",
