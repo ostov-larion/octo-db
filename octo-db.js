@@ -107,4 +107,14 @@ class OctoStore extends OctoDB {
         }
         return true
     }
+    async transaction(fn){
+        let pseudoDB = Object.assign({},this)
+        try{
+            await fn(pseudoDB)
+        }
+        catch(e){
+            throw e
+        }
+        await fn(this)
+    }
 }
