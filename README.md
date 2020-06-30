@@ -4,8 +4,8 @@ OctoDB - Destributed. Simple. Beautiful.
 # Ready!
 Connect this library to your project:
 ```html
-  <script src="octo-db.js"></script>
-	<script src="main.js"></script>
+<script src="octo-db.js"></script>
+<script src="main.js"></script>
 ```
 
 # Set!
