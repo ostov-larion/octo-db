@@ -1,5 +1,5 @@
 # octo-db
-<img src='https://github.com/ostov-larion/octo-db/tree/master/logo.png'>
+<img src='https://github.com/ostov-larion/octo-db/blob/master/logo.png' width=120>
 OctoDB - Destributed. Simple. Beautiful.
 
 # Ready!
