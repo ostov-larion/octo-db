@@ -97,10 +97,10 @@ peer = new Peer()
 users = new PeerStore("users", UserScheme, peer)
 await users.open()
 users.net.channel('db', {
-    async get(_, answer) {                // Someone asks for DB
+    async get(_, answer) {                 // Someone asks for DB
         answer('post', await users.all()) // Send him
     },
-    async post(data) { // Someone sent a DB
+    async post(data) {      // Someone sent a DB
         users.concat(data) // Combine the sent data with our DB
     }
 })
