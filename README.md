@@ -44,7 +44,7 @@ console.log(results)
 # DB is just lazy collection
 OctoDB wraps terrible and ugly IndexedDB API (sorry, W3C, it's right) to proxified simple and natural API. DB is just lazy collection!
 ```js
-db.entries[key] = entryObject // Set entry
+db.entries[key] = {key: data} // Set entry
 await db.entries[key] // Get entry
 delete db.entries[key] // Remove entry
 for await (let entry of db.entries) {} // Iterate entries
