@@ -1,3 +1,10 @@
+## Classes
+
+<dl>
+<dt><a href="#PeerStore">PeerStore</a></dt>
+<dd></dd>
+</dl>
+
 ## Functions
 
 <dl>
@@ -57,16 +64,51 @@ Create channel
 | Param | Type | Description |
 | --- | --- | --- |
 | header | <code>String</code> | Name of channel |
-| methods | <code>NetAdapterMethods</code> | Methods of NetAdapter |
+| methods | <code>Object</code> | Methods of NetAdapter |
 
 **Example**  
 ```js
-db.net.channel('tags',{ async get(_,answer){     answer('post',(await db.all()).map(e => ({hash: e.hash, tags: e.tags}))) }, async post(data){     for(let entry of data) {         db.entries[entry.hash] = entry     } }})
+db.net.channel('tags',{
+ async get(_,answer){
+     answer('post',(await db.all()).map(e => ({hash: e.hash, tags: e.tags})))
+ },
+ async post(data){
+     for(let entry of data) {
+         db.entries[entry.hash] = entry
+     }
+ }
+})
 ```
+<a name="PeerStore"></a>
+
+## PeerStore
+**Kind**: global class  
+
+* [PeerStore](#PeerStore)
+    * [new PeerStore(name, scheme, peer)](#new_PeerStore_new)
+    * [net](#PeerStore.this.net) : [<code>NetAdapterObject</code>](#NetAdapterObject)
+
+<a name="new_PeerStore_new"></a>
+
+### new PeerStore(name, scheme, peer)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Name of DB |
+| scheme | <code>Object</code> | Scheme Object |
+| peer | <code>Peer</code> | PeerJS client |
+
+<a name="PeerStore.this.net"></a>
+
+### PeerStore.net : [<code>NetAdapterObject</code>](#NetAdapterObject)
+net
+
+**Kind**: static property of [<code>PeerStore</code>](#PeerStore)  
 <a name="PeerJSNetAdapter"></a>
 
 ## PeerJSNetAdapter(peer) ⇒ [<code>NetAdapterObject</code>](#NetAdapterObject)
-PeerJS NetAdapter.Responsible for connecting to peers and establishing communication channels between databases
+PeerJS NetAdapter.
+Responsible for connecting to peers and establishing communication channels between databases
 
 **Kind**: global function  
 
