@@ -7,8 +7,10 @@ class OctoDB {
     constructor(name, scheme){
         name && (this.name = name)
         scheme && (this.scheme = scheme)
-        let proxy =  new Proxy(this, {
-            set: (_,key,value) => {
+        this.entries = new Proxy({}, {
+            set: (target,key,value) => {
+                if(target[key]) return target[key] = value
+                this.beforeSet && (value = this.beforeSet(key,value))
                 return new Promise((resolve,reject) => {
                     let store = this.db.transaction(this.name,"readwrite").objectStore(this.name)
                     store.put({...value,[scheme.keyPath]:key}).onsuccess = event => resolve(event.target.result)
@@ -24,6 +26,7 @@ class OctoDB {
                 })
             },
             deleteProperty: (_,key) => {
+                this.beforeDelete && this.beforeDelete(key)
                 return new Promise((resolve,reject) => {
                     let store = this.db.transaction(this.name,"readwrite").objectStore(this.name)
                     store.delete(key).onsuccess = event => resolve(event.target.result)
@@ -34,22 +37,24 @@ class OctoDB {
                 return proxy[key]
             }
         })
+    }
+    open(){
         return new Promise( (resolve,reject) => {
             let request = indexedDB.open("OctoDB/"+name,1)
             request.onupgradeneeded = event => {
                 this.created = true
                 let db =  event.target.result
-                let store = db.createObjectStore(name,{keyPath: scheme.keyPath})
-                for(let index of scheme.indexes){
+                let store = db.createObjectStore(name,{keyPath: this.scheme.keyPath})
+                for(let index of this.scheme.indexes){
                     store.createIndex(index.name, index.name,{unique: index.unique})
                 }
                 this.db = db
-                resolve(proxy)
+                resolve(this)
             }
             request.onsuccess = event => {
                 if(this.created) return
                 this.db = event.target.result
-                resolve(proxy)
+                resolve(this)
             }
             request.onerror = () => {
                 reject(request.error)
@@ -81,6 +86,7 @@ class OctoDB {
         }
     }
 }
+
 // It's beautiful...
 class OctoStore extends OctoDB {
     constructor(name,scheme){
@@ -92,7 +98,7 @@ class OctoStore extends OctoDB {
      */
     async filter(fn){
         let result = []
-        for await (let o of this){
+        for await (let o of this.entries){
             if(fn(o)) result.push(o)
         }
         return result
@@ -102,11 +108,44 @@ class OctoStore extends OctoDB {
      * @param {Function} fn 
      */
     async every(fn){
-        for await (let o of this){
+        for await (let o of this.entries){
             if(!fn(o)) return false
         }
         return true
     }
+    /**
+     * Slice DB
+     * @param {Number} start
+     * @param {Number} end
+     */
+    async slice(start,end){
+        let result = []
+        let i = 0
+        for await (let entry of this.entries){
+            if(i >= start && i <= end){
+                result.push(entry)
+            }
+            if(i == end){
+                break;
+            }
+        }
+        return result
+    }
+    /**
+     * ! This method mutate DB !
+     * 
+     * Concat DB with the array
+     * @param {Array} array 
+     */
+    async concat(array){
+        for(let o of array){
+            await (this.entries[o[this.scheme.keyPath]] = o)
+        }
+    }
+    /**
+     * OctoStore transaction
+     * @param {Function} fn 
+     */
     async transaction(fn){
         let pseudoDB = Object.assign({},this)
         try{
