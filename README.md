@@ -106,5 +106,5 @@ users.net.channel('db', {
 })
 ```
 # Documentation
-- [OctoDB and OctoStore](https://github.com/ostov-larion/octo-db/tree/master/docs/octo-db)
-- [PeerStore and PeerJS NetAdapter](https://github.com/ostov-larion/octo-db/tree/master/docs/peerjs-octo-db)
+- [OctoDB and OctoStore](https://github.com/ostov-larion/octo-db/tree/master/docs/octo-db.md)
+- [PeerStore and PeerJS NetAdapter](https://github.com/ostov-larion/octo-db/tree/master/docs/peerjs-octo-db.md)
