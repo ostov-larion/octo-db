@@ -20,11 +20,12 @@ UserScheme = {
         {name: "name"}
     ],
 }
-users = await new OctoDB("users",UserScheme)
-users[0] = {name: "John"}
-users[1] = {name: "Merry"}
-users[2] = {name: "Jane"}
-users[3] = {name: "Jack"}
+users = new OctoDB("users",UserScheme)
+await users.open()
+users.entries[0] = {name: "John"}
+users.entries[1] = {name: "Merry"}
+users.entries[2] = {name: "Jane"}
+users.entries[3] = {name: "Jack"}
 })()
 ```
 
@@ -34,7 +35,7 @@ Just use OctoDB:
 // Example of filtering (you can use OctoStore instead of this)
 
 let results = []
-for await (let entry of users){
+for await (let entry of users.entries){
   if(entry.name[0] == 'J') results.push(entry)
 }
 console.log(results)
@@ -43,27 +44,27 @@ console.log(results)
 # DB is just lazy collection
 OctoDB wraps terrible and ugly IndexedDB API (sorry, W3C, it's right) to proxified simple and natural API. DB is just lazy collection!
 ```js
-db[key] = entryObject // Set entry
-await db[key] // Get entry
-delete db[key] // Remove entry
-for await (let entry of db) {} // Iterate entries
+db.entries[key] = entryObject // Set entry
+await db.entries[key] // Get entry
+delete db.entries[key] // Remove entry
+for await (let entry of db.entries) {} // Iterate entries
 ```
 
 # Custom stores
 OctoDB provides minimal methods for working with DB. However, I would like to have many useful methods, such as `filter`,` every`. It's not a problem.
 ```js
 class OctoStore extends OctoDB {
-    constructor(name,scheme){
+    constructor(name,scheme) {
         super(name,scheme)
     }
     /**
      * Filter DB and return new Array of results
      * @param {Function} fn 
      */
-    async filter(fn){
+    async filter(fn) {
         let result = []
-        for await (let o of this){
-            if(fn(o)) result.push(o)
+        for await (let entry of this.entries) {
+            if(fn(entry)) result.push(o)
         }
         return result
     }
@@ -71,9 +72,9 @@ class OctoStore extends OctoDB {
      * Verify that all DB entries satisfy the condition 'fn'
      * @param {Function} fn 
      */
-    async every(fn){
-        for await (let o of this){
-            if(!fn(o)) return false
+    async every(fn) {
+        for await (let entry of this.entries) {
+            if(!fn(entry)) return false
         }
         return true
     }
@@ -88,4 +89,19 @@ await users.transaction(async(db) => {db[3] = {name: 'Jack'}; throw Error('ERROR
 
 // Case 2: No errors, normal flight
 await users.transaction(async(db) => {db[3] = {name: 'Jack'}}) // Jack has now arrived at your database
+```
+# Distribution
+OctoDB can be distributed across multiple clients. It uses NetAdapters to transfer DB between clients. This repository provides PeerJS NetAdapter (documentation later).
+```js
+peer = new Peer()
+users = new PeerStore("users", UserScheme, peer)
+users.open()
+users.net.channel('db', {
+    async get(_, answer) {                // Someone asks for DB
+        answer('post', await users.all()) // Send him
+    },
+    async post(data) { // Someone sent a DB
+        users.concat(data) // Combine the sent data with our DB
+    }
+})
 ```
