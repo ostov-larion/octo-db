@@ -64,7 +64,7 @@ class OctoStore extends OctoDB {
     async filter(fn) {
         let result = []
         for await (let entry of this.entries) {
-            if(fn(entry)) result.push(o)
+            if(fn(entry)) result.push(entry)
         }
         return result
     }
