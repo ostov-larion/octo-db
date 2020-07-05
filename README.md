@@ -95,7 +95,7 @@ OctoDB can be distributed across multiple clients. It uses NetAdapters to transf
 ```js
 peer = new Peer()
 users = new PeerStore("users", UserScheme, peer)
-users.open()
+await users.open()
 users.net.channel('db', {
     async get(_, answer) {                // Someone asks for DB
         answer('post', await users.all()) // Send him
