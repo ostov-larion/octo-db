@@ -1,7 +1,7 @@
 ## Classes
 
 <dl>
-<dt><a href="#OctoDB">OctoDB</a></dt>
+<dt><a href="#OctoDB">OctoDB</a> ⇐ <code>EventTarget</code></dt>
 <dd></dd>
 <dt><a href="#OctoStore">OctoStore</a> ⇐ <code><a href="#OctoDB">OctoDB</a></code></dt>
 <dd></dd>
@@ -9,10 +9,11 @@
 
 <a name="OctoDB"></a>
 
-## OctoDB
+## OctoDB ⇐ <code>EventTarget</code>
 **Kind**: global class  
+**Extends**: <code>EventTarget</code>  
 
-* [OctoDB](#OctoDB)
+* [OctoDB](#OctoDB) ⇐ <code>EventTarget</code>
     * [new OctoDB(name, scheme)](#new_OctoDB_new)
     * [.entries](#OctoDB+entries) : <code>Proxy</code>
     * [.open()](#OctoDB+open) ⇒ <code>Promise</code>
@@ -34,6 +35,7 @@ OctoDB - Proxy wrapper for IndexedDB
 Proxy API for manipulating DB.
 
 **Kind**: instance property of [<code>OctoDB</code>](#OctoDB)  
+**Emits**: <code>event:change</code>  
 **Example**  
 ```js
 db.entries[key] = {key: data} // Set entryawait db.entries[key] // Get entrydelete db.entries[key] // Remove entryfor await (let entry of db.entries) {} // Iterate entries
@@ -44,6 +46,7 @@ db.entries[key] = {key: data} // Set entryawait db.entries[key] // Get entryde
 Open DB
 
 **Kind**: instance method of [<code>OctoDB</code>](#OctoDB)  
+**Emits**: <code>event:open</code>  
 <a name="OctoStore"></a>
 
 ## OctoStore ⇐ [<code>OctoDB</code>](#OctoDB)
@@ -78,6 +81,7 @@ Useful add-on for OctoDB.
 Proxy API for manipulating DB.
 
 **Kind**: instance property of [<code>OctoStore</code>](#OctoStore)  
+**Emits**: <code>event:change</code>  
 **Example**  
 ```js
 db.entries[key] = {key: data} // Set entryawait db.entries[key] // Get entrydelete db.entries[key] // Remove entryfor await (let entry of db.entries) {} // Iterate entries
@@ -166,3 +170,4 @@ db.transaction(db => { db.entries['foo'] = {name: 'foo'}; db.entries['bar'] = {n
 Open DB
 
 **Kind**: instance method of [<code>OctoStore</code>](#OctoStore)  
+**Emits**: <code>event:open</code>  
