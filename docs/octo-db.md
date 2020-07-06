@@ -35,7 +35,7 @@ OctoDB - Proxy wrapper for IndexedDB
 Proxy API for manipulating DB.
 
 **Kind**: instance property of [<code>OctoDB</code>](#OctoDB)  
-**Emits**: <code>event:change</code>  
+**Emits**: <code>event:onchange</code>, <code>event:onset</code>, <code>event:ondelete</code>  
 **Example**  
 ```js
 db.entries[key] = {key: data} // Set entryawait db.entries[key] // Get entrydelete db.entries[key] // Remove entryfor await (let entry of db.entries) {} // Iterate entries
@@ -81,7 +81,7 @@ Useful add-on for OctoDB.
 Proxy API for manipulating DB.
 
 **Kind**: instance property of [<code>OctoStore</code>](#OctoStore)  
-**Emits**: <code>event:change</code>  
+**Emits**: <code>event:onchange</code>, <code>event:onset</code>, <code>event:ondelete</code>  
 **Example**  
 ```js
 db.entries[key] = {key: data} // Set entryawait db.entries[key] // Get entrydelete db.entries[key] // Remove entryfor await (let entry of db.entries) {} // Iterate entries
@@ -99,7 +99,7 @@ Filter DB and return new Array of results.
 
 **Example**  
 ```js
-users.filter(e => e.name[0] == 'J') // Get records of all users whose name begins with "J"
+await users.filter(e => e.name[0] == 'J') // Get records of all users whose name begins with "J"
 ```
 <a name="OctoStore+every"></a>
 
@@ -114,7 +114,7 @@ Verify that all DB entries satisfy the condition 'fn'.
 
 **Example**  
 ```js
-users.every(e => e.name[0] == 'J') // Check if all users have a name starting with "J"
+await users.every(e => e.name[0] == 'J') // Check if all users have a name starting with "J"
 ```
 <a name="OctoStore+slice"></a>
 
@@ -130,7 +130,7 @@ Slice DB.Useful for pagination.
 
 **Example**  
 ```js
-users.slice(0,10) // Get the first 10 entries
+await users.slice(0,10) // Get the first 10 entries
 ```
 <a name="OctoStore+all"></a>
 
@@ -138,6 +138,10 @@ users.slice(0,10) // Get the first 10 entries
 ! Don't use, if DB is large !Get all entries.
 
 **Kind**: instance method of [<code>OctoStore</code>](#OctoStore)  
+**Example**  
+```js
+await users.all()
+```
 <a name="OctoStore+concat"></a>
 
 ### octoStore.concat(array)
@@ -149,6 +153,10 @@ users.slice(0,10) // Get the first 10 entries
 | --- | --- | --- |
 | array | <code>Array</code> | Array of entries |
 
+**Example**  
+```js
+await users.concat([{name: "Jotaro"}])
+```
 <a name="OctoStore+transaction"></a>
 
 ### octoStore.transaction(fn)

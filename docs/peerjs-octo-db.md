@@ -8,7 +8,7 @@
 ## Functions
 
 <dl>
-<dt><a href="#PeerJSNetAdapter">PeerJSNetAdapter(peer)</a> ⇒ <code><a href="#NetAdapterObject">NetAdapterObject</a></code></dt>
+<dt><a href="#PeerJSNetAdapter">PeerJSNetAdapter(peer, db)</a> ⇒ <code><a href="#NetAdapterObject">NetAdapterObject</a></code></dt>
 <dd><p>PeerJS NetAdapter.
 Responsible for connecting to peers and establishing communication channels between databases</p>
 </dd>
@@ -98,7 +98,7 @@ net
 **Kind**: static property of [<code>PeerStore</code>](#PeerStore)  
 <a name="PeerJSNetAdapter"></a>
 
-## PeerJSNetAdapter(peer) ⇒ [<code>NetAdapterObject</code>](#NetAdapterObject)
+## PeerJSNetAdapter(peer, db) ⇒ [<code>NetAdapterObject</code>](#NetAdapterObject)
 PeerJS NetAdapter.Responsible for connecting to peers and establishing communication channels between databases
 
 **Kind**: global function  
@@ -106,4 +106,5 @@ PeerJS NetAdapter.Responsible for connecting to peers and establishing communic
 | Param | Type | Description |
 | --- | --- | --- |
 | peer | <code>Peer</code> | PeerJS client |
+| db | <code>OctoDB</code> | OctoDB instance |
 

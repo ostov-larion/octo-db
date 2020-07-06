@@ -18,7 +18,9 @@ class OctoDB extends EventTarget {
         /**
          * Proxy API for manipulating DB.
          * @type {Proxy}
-         * @fires change
+         * @emits onchange
+         * @emits onset
+         * @emits ondelete
          * @example
          * db.entries[key] = {key: data} // Set entry
          * await db.entries[key] // Get entry
@@ -32,7 +34,8 @@ class OctoDB extends EventTarget {
                     let store = ctx.db.transaction(ctx.name,"readwrite").objectStore(ctx.name)
                     store.put({...value,[scheme.keyPath]:key}).onsuccess = event => {
                         resolve(event.target.result)
-                        ctx.dispatchEvent(change)
+                        ctx.dispatchEvent(onchange)
+                        ctx.dispatchEvent(onset)
                     }
                     store.onerror = err => reject(err)
                 })
@@ -49,7 +52,11 @@ class OctoDB extends EventTarget {
                 ctx.beforeDelete && ctx.beforeDelete(key)
                 return new Promise((resolve,reject) => {
                     let store = ctx.db.transaction(ctx.name,"readwrite").objectStore(ctx.name)
-                    store.delete(key).onsuccess = event => resolve(event.target.result)
+                    store.delete(key).onsuccess = event => {
+                        resolve(event.target.result)
+                        ctx.dispatchEvent(onchange)
+                        ctx.dispatchEvent(ondelete)
+                    }
                     store.onerror = err => reject(err)
                 })
             },
@@ -60,7 +67,7 @@ class OctoDB extends EventTarget {
     }
     /**
      * Open DB
-     * @fires open
+     * @emits open
      * @returns {Promise}
      */
     open(){
@@ -91,7 +98,6 @@ class OctoDB extends EventTarget {
     // I spent VERY much time to do this magic
     // Do not even try to understand how it works. I myself did not fully understand this.
     [Symbol.asyncIterator](){
-        console.log(this.name)
         let store = this.db.transaction(this.name,"readwrite").objectStore(this.name)
         let reqCursor = store.openCursor()
         let iterationPromise = (reqCursor) => 
@@ -115,9 +121,10 @@ class OctoDB extends EventTarget {
     }
 }
 
-let open = new Event("open")
-let change = new Event("change")
-let onconnection = new Event("onconnection")
+let onopen = new Event("open")
+let onconnection = new Event("connection")
+let onset = new Event("set")
+let ondelete = new Event("delete")
 
 // It's beautiful...
 class OctoStore extends OctoDB {
@@ -133,7 +140,7 @@ class OctoStore extends OctoDB {
     /**
      * Filter DB and return new Array of results.
      * @param {Function} fn
-     * @example users.filter(e => e.name[0] == 'J') // Get records of all users whose name begins with "J"
+     * @example await users.filter(e => e.name[0] == 'J') // Get records of all users whose name begins with "J"
      */
     async filter(fn){
         let result = []
@@ -145,7 +152,7 @@ class OctoStore extends OctoDB {
     /**
      * Verify that all DB entries satisfy the condition 'fn'.
      * @param {Function} fn 
-     * @example users.every(e => e.name[0] == 'J') // Check if all users have a name starting with "J"
+     * @example await users.every(e => e.name[0] == 'J') // Check if all users have a name starting with "J"
      */
     async every(fn){
         for await (let o of this.entries){
@@ -159,7 +166,7 @@ class OctoStore extends OctoDB {
      * Useful for pagination.
      * @param {Number} start
      * @param {Number} end
-     * @example users.slice(0,10) // Get the first 10 entries
+     * @example await users.slice(0,10) // Get the first 10 entries
      */
     async slice(start,end){
         let result = []
@@ -178,6 +185,7 @@ class OctoStore extends OctoDB {
      * ! Don't use, if DB is large !
      * 
      * Get all entries.
+     * @example await users.all()
      */
     async all(){
         let result = []
@@ -191,6 +199,7 @@ class OctoStore extends OctoDB {
      * 
      * Concat DB with the array.
      * @param {Array} array Array of entries
+     * @example await users.concat([{name: "Jotaro"}])
      */
     async concat(array){
         for(let o of array){

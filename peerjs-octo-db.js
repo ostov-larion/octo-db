@@ -2,6 +2,7 @@
  * PeerJS NetAdapter.
  * Responsible for connecting to peers and establishing communication channels between databases
  * @param {Peer} peer PeerJS client
+ * @param {OctoDB} db OctoDB instance
  * @returns {NetAdapterObject}
  */
 PeerJSNetAdapter = (peer,db) =>
