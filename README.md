@@ -1,6 +1,6 @@
 # octo-db
 <img src='https://github.com/ostov-larion/octo-db/blob/master/logo.png' width=120>
-OctoDB - Destributed. Simple. Beautiful.
+OctoDB - wrapper for IndexedDB using Proxy and Async / Await to build a natural looking and simple API. Among other things, OctoDB can distribute!
 
 # Ready!
 Connect this library to your project:
